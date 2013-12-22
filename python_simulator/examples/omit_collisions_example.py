@@ -22,7 +22,7 @@ class OmitCollisions(RobotController):
             if self.phase == OmitCollisions.STATE_LOOK_FOR_SPACE:
                 self.command_queue.append([TURN, random.randint(-1, 1)* 10])
                 self.command_queue.append([SENSE_SONAR])
-                self.command_queue.append([WRITE_CONSOLE, "Hello"])
+                self.command_queue.append([WRITE_CONSOLE, "OmitCollisions bot reporting"])
             elif self.phase == MAP_GOAL:
                 self.command_queue.append([FINISH])
             else:
