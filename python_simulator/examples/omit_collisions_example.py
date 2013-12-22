@@ -22,6 +22,9 @@ class OmitCollisions(RobotController):
             if self.phase == OmitCollisions.STATE_LOOK_FOR_SPACE:
                 self.command_queue.append([TURN, random.randint(-1, 1)* 10])
                 self.command_queue.append([SENSE_SONAR])
+                self.command_queue.append([WRITE_CONSOLE, "Hello"])
+            elif self.phase == MAP_GOAL:
+                self.command_queue.append([FINISH])
             else:
                 self.command_queue.append([MOVE, 1])
                 self.command_queue.append([SENSE_SONAR])
@@ -31,12 +34,13 @@ class OmitCollisions(RobotController):
 
     def on_sense_sonar(self, distance):
         self.last_distance = distance
-        if distance < 0.04:
+        if distance < 0.01:
             self.phase = OmitCollisions.STATE_LOOK_FOR_SPACE
         else:
             self.phase = OmitCollisions.STATE_FORWARD
 
 
     def on_sense_field(self, field_type, field_parameter):
-        pass
+        if field_type == MAP_GOAL:
+            self.phase = MAP_GOAL
 
