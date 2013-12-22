@@ -4,7 +4,7 @@ import random
 
 class ForwardTurningRobotController(RobotController):
     """ Exemplary robot controller """
-    def init(self, starting_position, steering_noise, distance_noise, measurement_noise, speed, turning_speed, execution_cpu_time_limit):
+    def init(self, starting_position, steering_noise, distance_noise, sonar_noise, measurement_noise, speed, turning_speed,gps_delay,execution_cpu_time_limit):
         self.speed = speed
 
     def act(self):
