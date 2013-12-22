@@ -8,7 +8,7 @@ class OmitCollisions(RobotController):
     STATE_FORWARD = 0
     STATE_LOOK_FOR_SPACE = 1
 
-    def init(self, starting_position, steering_noise, distance_noise, measurement_noise, speed, turning_speed, execution_cpu_time_limit):
+    def init(self, starting_position, steering_noise, distance_noise, sonar_noise, measurement_noise, speed, turning_speed, execution_cpu_time_limit):
 
 
         self.phase = OmitCollisions.STATE_LOOK_FOR_SPACE
