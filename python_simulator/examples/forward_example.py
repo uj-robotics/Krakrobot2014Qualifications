@@ -8,7 +8,7 @@ class ForwardTurningRobotController(RobotController):
         self.speed = speed
 
     def act(self):
-        return MOVE, 0.0, self.speed
+        return MOVE, 4
 
 
     def on_sense_sonar(self, dist):
