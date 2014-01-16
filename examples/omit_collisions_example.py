@@ -16,13 +16,17 @@ class OmitCollisions(RobotController):
         self.turn_speed = turning_speed
         self.command_queue = []
         self.last_distance = 0.0
+        self.x = 0
+        self.y = 0
 
     def act(self):
         if len(self.command_queue) == 0:
             if self.phase == OmitCollisions.STATE_LOOK_FOR_SPACE:
                 self.command_queue.append([TURN, random.randint(-1, 1)* 10])
                 self.command_queue.append([SENSE_SONAR])
-                self.command_queue.append([WRITE_CONSOLE, "OmitCollisions bot reporting"])
+                print self.x
+                self.command_queue.append([SENSE_GPS])
+                self.command_queue.append([WRITE_CONSOLE, "OmitCollisions bot reporting with "+str(self.x)+" "+str(self.y)])
             elif self.phase == MAP_GOAL:
                 self.command_queue.append([FINISH])
             else:
@@ -31,6 +35,10 @@ class OmitCollisions(RobotController):
                 self.command_queue.append([SENSE_FIELD])
 
         return self.command_queue.pop(0)
+
+    def on_sense_gps(self, x, y):
+        self.x = x
+        self.y = y
 
     def on_sense_sonar(self, distance):
         self.last_distance = distance
