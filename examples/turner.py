@@ -81,7 +81,7 @@ class Turner(RobotController):
                     print "Current angle is ",self.angle, "rotation by ",(angle - self.angle), " to ",angle
                     rotation_ticks = int((angle - self.angle)/180.0 * pi / TICK_ROTATE)
                     if rotation_ticks != 0 : self.command_queue.append([TURN, rotation_ticks])
-
+                    self.angle = angle
                     self.command_queue.append([MOVE, int(1.0/TICK_MOVE)])
                     self.command_queue.append(["STATE_CHANGE", Turner.STATE_FINDING_POSITION])
 
@@ -98,12 +98,13 @@ class Turner(RobotController):
                 scanned = (x_disc-round(vector[1]), y_disc + round(vector[0]))
                 print "Scanned ", scanned
                 print "Distance scanned ",self.last_distance
-                if self.last_distance < 0.9:
-                    # Strange indexing because x runs vertically and y runs horizontally
-                    # Set big number so that it won't be visited
-                    self.map_visited[(x_disc-round(vector[1]+0.01), y_disc + round(vector[0]+0.01))] = 1000
-                else:
-                    self.map_visited[(x_disc-round(vector[1]+0.01), y_disc + round(vector[0]+0.01))] = 0
+                if (x_disc-round(vector[1]+0.01), y_disc + round(vector[0]+0.01)) not in self.map_visited:
+                    if self.last_distance < 0.9:
+                        # Strange indexing because x runs vertically and y runs horizontally
+                        # Set big number so that it won't be visited
+                        self.map_visited[(x_disc-round(vector[1]+0.01), y_disc + round(vector[0]+0.01))] = 1000
+                    else:
+                        self.map_visited[(x_disc-round(vector[1]+0.01), y_disc + round(vector[0]+0.01))] = 0
 
                 self.state_helper += 1
 
@@ -139,11 +140,12 @@ class Turner(RobotController):
                     x_disc, y_disc = self.get_discrete_position()
 
                     self.map_visited[(x_disc, y_disc)] += 1
-
+                    self.command_queue.append([SENSE_FIELD])
                     self.command_queue.append(["STATE_CHANGE", Turner.STATE_DECIDE_NEXT])
             # Finish
             elif self.state == Turner.STATE_FOUND_GOAL:
-                self.command_queue.append([FINISH])
+                self.command_queue = [[FINISH]]
+
 
         # Return next command
         c = self.command_queue.pop(0)
@@ -159,6 +161,6 @@ class Turner(RobotController):
         self.last_distance = distance
 
     def on_sense_field(self, field_type, field_parameter):
-        if field_type == MAP_GOAL:
-            self.state = Turner.STATE_FOUND_GOAL
 
+        if field_type == MAP_GOAL:
+            self.command_queue = [[FINISH]]
