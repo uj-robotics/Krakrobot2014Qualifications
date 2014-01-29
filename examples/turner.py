@@ -87,37 +87,37 @@ class Turner(RobotController):
 
                 self.state_helper = 0
             # We are scanning fields to see what is there, we have just observed something
-                elif self.state == Turner.STATE_SCANNING:
-                    print "Scanning on ",x_disc, " ",y_disc
+            elif self.state == Turner.STATE_SCANNING:
+                print "Scanning on ",x_disc, " ",y_disc
 
-                    import math
-                    # Directional cosinus
-                    # Change of coordinates for convenience
-                    vector = (math.cos((self.angle - 90.0)/180.0 * pi), math.sin((self.angle - 90.0)/180.0 * pi))
-                    print "Vector = ", vector
-                    scanned = (x_disc-round(vector[1]), y_disc + round(vector[0]))
-                    print "Scanned ", scanned
-                    print "Distance scanned ",self.last_distance
-                    if (x_disc-round(vector[1]+0.01), y_disc + round(vector[0]+0.01)) not in self.map_visited:
-                        if self.last_distance < 0.9:
-                            # Strange indexing because x runs vertically and y runs horizontally
-                            # Set big number so that it won't be visited
-                            self.map_visited[(x_disc-round(vector[1]+0.01), y_disc + round(vector[0]+0.01))] = 1000
-                        else:
-                            self.map_visited[(x_disc-round(vector[1]+0.01), y_disc + round(vector[0]+0.01))] = 0
-
-                    self.state_helper += 1
-
-
-                    # It means that we have reached the last rotation
-                    if self.state_helper == 4:
-                        self.command_queue.append(["STATE_CHANGE", Turner.STATE_DECIDE_NEXT])
+                import math
+                # Directional cosinus
+                # Change of coordinates for convenience
+                vector = (math.cos((self.angle - 90.0)/180.0 * pi), math.sin((self.angle - 90.0)/180.0 * pi))
+                print "Vector = ", vector
+                scanned = (x_disc-round(vector[1]), y_disc + round(vector[0]))
+                print "Scanned ", scanned
+                print "Distance scanned ",self.last_distance
+                if (x_disc-round(vector[1]+0.01), y_disc + round(vector[0]+0.01)) not in self.map_visited:
+                    if self.last_distance < 0.9:
+                        # Strange indexing because x runs vertically and y runs horizontally
+                        # Set big number so that it won't be visited
+                        self.map_visited[(x_disc-round(vector[1]+0.01), y_disc + round(vector[0]+0.01))] = 1000
                     else:
-                        self.command_queue.append([TURN, int(0.5*pi / TICK_ROTATE)])
-                        self.angle = (self.angle + 90.0) % 360
+                        self.map_visited[(x_disc-round(vector[1]+0.01), y_disc + round(vector[0]+0.01))] = 0
 
-                        print "Angle after rotation ", self.angle
-                        self.command_queue.append([SENSE_SONAR])
+                self.state_helper += 1
+
+
+                # It means that we have reached the last rotation
+                if self.state_helper == 4:
+                    self.command_queue.append(["STATE_CHANGE", Turner.STATE_DECIDE_NEXT])
+                else:
+                    self.command_queue.append([TURN, int(0.5*pi / TICK_ROTATE)])
+                    self.angle = (self.angle + 90.0) % 360
+
+                    print "Angle after rotation ", self.angle
+                    self.command_queue.append([SENSE_SONAR])
 
             # Find next move
             elif self.state == Turner.STATE_FINDING_POSITION:
