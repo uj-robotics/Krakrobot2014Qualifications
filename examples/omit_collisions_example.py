@@ -23,8 +23,7 @@ class OmitCollisions(RobotController):
     def act(self):
         if len(self.command_queue) == 0:
             if self.phase == OmitCollisions.STATE_LOOK_FOR_SPACE:
-                print (pi/100.0) / TICK_ROTATE
-                self.command_queue.append([TURN, (pi/100.0) / TICK_ROTATE ]) #rotate by 3.6 degree
+                self.command_queue.append([TURN, int((pi/100.0) / TICK_ROTATE )]) # Rotate by small angle
                 self.command_queue.append([SENSE_SONAR])
                 self.command_queue.append([SENSE_GPS])
                 self.command_queue.append([WRITE_CONSOLE, "OmitCollisions bot reporting with "+str(self.x)+" "+str(self.y)])
