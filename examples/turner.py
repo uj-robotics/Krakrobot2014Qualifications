@@ -4,15 +4,16 @@ from robot_controller import RobotController
 import random
 from math import pi
 
-class OmitCollisions(RobotController):
+class Turner(RobotController):
     """ Exemplary robot controller omitting collisions """
     STATE_FORWARD = 0
     STATE_LOOK_FOR_SPACE = 1
 
-    def init(self, starting_position, steering_noise, distance_noise, sonar_noise, measurement_noise, speed, turning_speed,gps_delay,execution_cpu_time_limit):
+    def init(self, starting_position, steering_noise, distance_noise, sonar_noise,
+             measurement_noise, speed, turning_speed, gps_delay, execution_cpu_time_limit):
 
 
-        self.phase = OmitCollisions.STATE_LOOK_FOR_SPACE
+        self.phase = Turner.STATE_LOOK_FOR_SPACE
         self.speed = speed
         self.turn_speed = turning_speed
         self.command_queue = []
@@ -22,9 +23,8 @@ class OmitCollisions(RobotController):
 
     def act(self):
         if len(self.command_queue) == 0:
-            if self.phase == OmitCollisions.STATE_LOOK_FOR_SPACE:
-                print (pi/100.0) / TICK_ROTATE
-                self.command_queue.append([TURN, (pi/100.0) / TICK_ROTATE ]) #rotate by 3.6 degree
+            if self.phase == Turner.STATE_LOOK_FOR_SPACE:
+                self.command_queue.append([TURN, 2 ]) # Rotate 90 degrees clockwise
                 self.command_queue.append([SENSE_SONAR])
                 self.command_queue.append([SENSE_GPS])
                 self.command_queue.append([WRITE_CONSOLE, "OmitCollisions bot reporting with "+str(self.x)+" "+str(self.y)])
@@ -44,9 +44,9 @@ class OmitCollisions(RobotController):
     def on_sense_sonar(self, distance):
         self.last_distance = distance
         if distance < 0.01:
-            self.phase = OmitCollisions.STATE_LOOK_FOR_SPACE
+            self.phase = Turner.STATE_LOOK_FOR_SPACE
         else:
-            self.phase = OmitCollisions.STATE_FORWARD
+            self.phase = Turner.STATE_FORWARD
 
 
     def on_sense_field(self, field_type, field_parameter):
