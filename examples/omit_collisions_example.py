@@ -10,8 +10,6 @@ class OmitCollisions(RobotController):
     STATE_LOOK_FOR_SPACE = 1
 
     def init(self, starting_position, steering_noise, distance_noise, sonar_noise, measurement_noise, speed, turning_speed,gps_delay,execution_cpu_time_limit):
-
-
         self.phase = OmitCollisions.STATE_LOOK_FOR_SPACE
         self.speed = speed
         self.turn_speed = turning_speed
@@ -23,7 +21,7 @@ class OmitCollisions(RobotController):
     def act(self):
         if len(self.command_queue) == 0:
             if self.phase == OmitCollisions.STATE_LOOK_FOR_SPACE:
-                self.command_queue.append([TURN, int((pi/100.0) / TICK_ROTATE )]) # Rotate by small angle
+                self.command_queue.append([TURN, int((pi/10.0) / TICK_ROTATE )]) # Rotate by small angle
                 self.command_queue.append([SENSE_SONAR])
                 self.command_queue.append([SENSE_GPS])
                 self.command_queue.append([WRITE_CONSOLE, "OmitCollisions bot reporting with "+str(self.x)+" "+str(self.y)])
@@ -50,5 +48,6 @@ class OmitCollisions(RobotController):
 
     def on_sense_field(self, field_type, field_parameter):
         if field_type == MAP_GOAL:
+            print "Sensed ",field_type," which is goal with field_type ",field_type
             self.phase = MAP_GOAL
 
